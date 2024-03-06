@@ -41,7 +41,7 @@
 #define COMMAND_SIZE    512
 #define HEADER_INFO     "\r\n"\
                         "***************************************************\r\n"\
-                        "* Console2Bridge Application for Wireless Modules *\r\n"\
+                        "* Bridge Application for Renesas Wireless Modules *\r\n"\
                         "***************************************************\r\n"\
                         "\r\n"
 
