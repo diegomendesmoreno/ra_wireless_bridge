@@ -1,6 +1,7 @@
 # RA Wireless Bridge
 
 This project is an interface bridge between a RA MCU and Renesas Wireless Modules below:
+
 - Bluetooth Low Energy (BLE) - [DA14531MOD](https://www.renesas.com/us/en/products/wireless-connectivity/bluetooth-low-energy/da14531mod-smartbond-tiny-bluetooth-low-energy-module)
 - Wi-Fi - [DA16200MOD](https://www.renesas.com/us/en/products/wireless-connectivity/wi-fi/low-power-wi-fi/da16200mod-ultra-low-power-wi-fi-modules-battery-powered-iot-devices)
 
@@ -8,7 +9,6 @@ You can type the AT commands in a console (two options below) and they are trans
 
 - [RTT (Real Time Transfer)](https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/) through SEGGER J-Link
 - Terminal emulator (communications) program such as Tera Term through a COM Port (USB device/peripheral CDC)
-
 
 # How to run the project
 
@@ -25,6 +25,7 @@ This project is made for running with the boards below:
 ### Flashing the wireless modules with the AT Commands firmware
 
 #### Bluetooth Low Energy (BLE) - US159-DA14531EVZ
+
 - Download the lastest AT Command firmware image ([CodeLess™ AT Commands](https://www.renesas.com/us/en/software-tool/smartbond-codeless-commands))
 - You can use a SEGGER J-Link if you have one, or use the on-board J-Link in the RA board
   - For this, change the jumpers according to _5.2.3 Debug Out_ section of the [EK-RA4M2 v1 – User's Manual](https://www.renesas.com/us/en/document/man/ek-ra4m2-v1-users-manual?r=1470206)
@@ -38,13 +39,11 @@ This project is made for running with the boards below:
 - Follow the steps at the section _4.5 Programming Firmware Images_ of [UM-WI-056 DA16200 DA16600 FreeRTOS Getting Started Guide](https://www.renesas.com/us/en/document/qsg/um-wi-056-da16200-da16600-freertos-getting-started-guide?r=1599971)
 - For firmware upgrade, you need to use the debug interface (UART0) and not the ATCMD interface (UART1).
 
-
 ### MCU - EK-RA4M2 and connecting the boards
 
 - If you used the on-board J-Link to flash the BLE module, change the jumper configuration back to _Table 5. Debug On-Board Jumper Configuration_ section of the [EK-RA4M2 v1 – User's Manual](https://www.renesas.com/us/en/document/man/ek-ra4m2-v1-users-manual?r=1470206)
 - For USB, change the jumpers according to the _USB Device configuration_ described in _5.4.1 USB Full Speed_ section of the _EK-RA4M2 v1 – User's Manual_
 - Connect either the US159-DA14531EVZ or US159-DA16200MEVZ to the `PMOD2` connector in the RA board
-
 
 ## Running the application
 
@@ -61,11 +60,13 @@ This project is made for running with the boards below:
 - Check the RTTViewer installation and usage in [Example Project Usage Guide](https://github.com/renesas/ra-fsp-examples/blob/master/example_projects/Example%20Project%20Usage%20Guide.pdf)
 - RTTViewer configs:
   - Send on Input (`Input` >> `Sending...` >> `Send on Input`)
+  - `File` >> `Connect`
+    - Target Device: `R7FA4M2AD`
+    - RTT Control Block: Search Range (`0x20000000 0x10000`) or look into the guide above if it doesn't work
 
 #### Console - If you're using Terminal through USB CDC
 
 - Open a terminal communication program (such as Tera Term) and connect to the newly opened COM Port
-
 
 ### Example
 
