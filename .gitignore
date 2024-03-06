@@ -1,0 +1,16 @@
+## RA ##
+
+# FSP auto generated files
+/ra
+/ra_cfg
+/ra_gen
+ra_cfg.txt
+.api_xml
+.secure_*
+
+# Debug files
+JLinkLog.log
+
+# Object files
+/Debug
+/Release
