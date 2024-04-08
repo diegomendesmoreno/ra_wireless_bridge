@@ -9,6 +9,10 @@ ra_cfg.txt
 .secure_*
 .settings/e2studio_project.prefs
 
+.settings/com.renesas.cdt.ddsc.packs.componentfiles.prefs
+.settings/com.renesas.cdt.ddsc.settingseditor.prefs
+.settings/language.settings.xml
+
 # Debug files
 JLinkLog.log
 

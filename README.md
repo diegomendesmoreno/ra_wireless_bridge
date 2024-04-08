@@ -8,7 +8,7 @@ This project is an interface bridge between a RA MCU and Renesas Wireless Module
 You can type the AT commands in a console (two options below) and they are transmitted to and from the module through the MCU via UART.
 
 - [RTT (Real Time Transfer)](https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/) through SEGGER J-Link
-- Terminal emulator (communications) program such as Tera Term through a COM Port (USB device/peripheral CDC)
+- ~~Terminal emulator (communications) program such as Tera Term through a COM Port (USB device/peripheral CDC).~~
 
 # How to run the project
 
@@ -49,10 +49,11 @@ This project is made for running with the boards below:
 
 #### Building and flashing the application
 
+- Have e2studio and FSP (version 5.x.x) installed. I recommend installing FSP with e2 studio installer from [FSP's GitHub Release page](https://github.com/renesas/fsp/releases).
 - Clone or download this repository to your PC
 - Open e2studio and export the project (_3.2.12 Importing an Existing Project into e² studio_ section of [FSP User's Manual](https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp))
 - Open the file `configuration.xml` to open _FSP Configuration_ and press the button _Generate Project Content_
-- Leave `#define USE_RTT` at `app/console.h` to use RTT and comment it out to use Terminal through USB CDC as console
+- Leave `#define USE_RTT` at `app/console.h` to use RTT ~~and comment it out to use Terminal through USB CDC as console.~~
 - Build it and go into debug to flash the firmware (_3.2.9 Debugging the Project_ section of _FSP User's Manual_)
 
 #### Console - If you're using RTT
@@ -64,9 +65,9 @@ This project is made for running with the boards below:
     - Target Device: `R7FA4M2AD`
     - RTT Control Block: Search Range (`0x20000000 0x10000`) or look into the guide above if it doesn't work
 
-#### Console - If you're using Terminal through USB CDC
+#### ~~Console - If you're using Terminal through USB CDC~~
 
-- Open a terminal communication program (such as Tera Term) and connect to the newly opened COM Port
+- ~~Open a terminal communication program (such as Tera Term) and connect to the newly opened COM Port.~~
 
 ### Example
 
@@ -92,7 +93,7 @@ OK
 
 ## How to port this project for different RA Evaluation kits (EK)
 
-- Import the Application software (`app` folder)
-- Add some Heap (e.g. `0x100`) in `FSP Configuration` >> `BSP` (tab) >> `Properties` >> `RA Common` >> `Heap size (bytes)`
-- Setup UART pins connected to the PMOD2 connector (see the evaluation kit user's manual or schematics)
-- Setup USB peripheral CDC (if present) to get the Terminal COM Port console option with the provided descriptor
+- Import the Application software (`app` folder).
+- Add some Heap (e.g. `0x100`) in `FSP Configuration` >> `BSP` (tab) >> `Properties` >> `RA Common` >> `Heap size (bytes)`.
+- Setup UART pins connected to the PMOD2 connector (see the evaluation kit user's manual or schematics).
+- ~~Setup USB peripheral CDC (if present) to get the Terminal COM Port console option with the provided descriptor.~~
