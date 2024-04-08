@@ -80,7 +80,7 @@
       <property id="config.bsp.fsp.mcu.adc_dmac.samples_per_channel" value="65535"/>
     </config>
     <config id="config.bsp.ra">
-      <property id="config.bsp.common.main" value="0x400"/>
+      <property id="config.bsp.common.main" value="0x1000"/>
       <property id="config.bsp.common.heap" value="0x100"/>
       <property id="config.bsp.common.vcc" value="3300"/>
       <property id="config.bsp.common.checking" value="config.bsp.common.checking.disabled"/>

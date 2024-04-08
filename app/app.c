@@ -35,17 +35,12 @@
 #include "app.h"
 #include "bridge.h"
 #include "console.h"
+#include "da16200_2_mqtt_webserver.h"
 
 /**********************************************************************************
  * Defines, Macros and Typedefs
  *********************************************************************************/
-#define HEADER_INFO     "\r\n"\
-                        "***************************************************\r\n"\
-                        "* Choose the wireless module:                     *\r\n"\
-                        "* 1 - DA14531                                     *\r\n"\
-                        "* 2 - DA16200                                     *\r\n"\
-                        "***************************************************\r\n"\
-                        "\r\n"
+
 
 /**********************************************************************************
  * Global variables
@@ -55,7 +50,8 @@
 /**********************************************************************************
  * Function declarations
  *********************************************************************************/
-wireless_module_t choose_module(void);
+static wireless_module_t menu_choose_module(void);
+static void menu_choose_application(wireless_module_t module);
 
 /**********************************************************************************
  * Function definitions
@@ -65,17 +61,25 @@ void main_app(void)
     console_init();
 
     // Choosing which module is connected
-    wireless_module_t wireless_module = choose_module();
+    wireless_module_t wireless_module = menu_choose_module();
 
-    bridge_run(wireless_module);
+    menu_choose_application(wireless_module);
 }
 
-wireless_module_t choose_module(void)
+static wireless_module_t menu_choose_module(void)
 {
     wireless_module_t wireless_module = 0;
     int received_response = 0;
+    const char MENU_MODULE_HEADER[] =   "\r\n"\
+                                        "***************************************************\r\n"\
+                                        "* Choose the wireless module:                     *\r\n"\
+                                        "* 1 - DA14531                                     *\r\n"\
+                                        "* 2 - DA16200                                     *\r\n"\
+                                        "***************************************************\r\n"\
+                                        "\r\n";
 
-    console_printf(HEADER_INFO);
+    // print header
+    console_printf(MENU_MODULE_HEADER);
 
     while (received_response == 0)
     {
@@ -85,15 +89,17 @@ wireless_module_t choose_module(void)
         {
             console_read(&character, 1);
 
-            int number = character - 0x30;
+            int option = character - 0x30;
 
-            switch (number)
+            switch (option)
             {
                 case DA14531:
                 case DA16200:
                 {
-                    console_printf("%d\r\n", number);
-                    wireless_module = number;
+                    // echo choice
+                    console_printf("%d\r\n", option);
+
+                    wireless_module = option;
                     received_response = 1;
                     break;
                 }
@@ -101,7 +107,9 @@ wireless_module_t choose_module(void)
                 default:
                 {
                     console_printf("Invalid input\r\n");
-                    console_printf(HEADER_INFO);
+
+                    // print header
+                    console_printf(MENU_MODULE_HEADER);
                     break;
                 }
             }
@@ -109,4 +117,168 @@ wireless_module_t choose_module(void)
     }
 
     return wireless_module;
+}
+
+static void menu_choose_application(wireless_module_t module)
+{
+    int received_response = 0;
+    const char MENU_APPS_DA14531_HEADER[] = "\r\n"\
+                                            "***************************************************\r\n"\
+                                            "*     DA14531                                     *\r\n"\
+                                            "*                                                 *\r\n"\
+                                            "* Choose the application:                         *\r\n"\
+                                            "* 0 - Example application - echo \"DA14531 app\"  *\r\n"\
+                                            "* 1 - UART Bridge to send AT Commands             *\r\n"\
+                                            "* 2 - Sending/receiving data with SmartConsole    *\r\n"\
+                                            "***************************************************\r\n"\
+                                            "\r\n";
+
+    const char MENU_APPS_DA16200_HEADER[] = "\r\n"\
+                                            "***************************************************\r\n"\
+                                            "*     DA16200                                     *\r\n"\
+                                            "*                                                 *\r\n"\
+                                            "* Choose the application:                         *\r\n"\
+                                            "* 0 - Example application - echo \"DA16200 app\"  *\r\n"\
+                                            "* 1 - UART Bridge to send AT Commands             *\r\n"\
+                                            "* 2 - Sending info to Web server with MQTT        *\r\n"\
+                                            "***************************************************\r\n"\
+                                            "\r\n";
+
+    switch (module)
+    {
+        case DA14531:
+        {
+            // print header
+            console_printf(MENU_APPS_DA14531_HEADER);
+
+            while (received_response == 0)
+            {
+                char character = '\0';
+
+                if (console_ready_to_read() == 1)
+                {
+                    console_read(&character, 1);
+
+                    int option = character - 0x30;
+
+                    switch (option)
+                    {
+                        case 0:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            console_printf("\r\nDA14531 app\r\n", option);
+
+                            // print header
+                            console_printf(MENU_APPS_DA14531_HEADER);
+                            break;
+                        }
+
+                        case 1:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            bridge_run(module);
+
+                            received_response = 1;
+                            break;
+                        }
+
+                        case 2:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            console_printf("\r\nSending/receiving data with SmartConsole\r\n", option);
+
+                            received_response = 1;
+                            break;
+                        }
+
+                        default:
+                        {
+                            console_printf("Invalid input\r\n");
+
+                            // print header
+                            console_printf(MENU_APPS_DA14531_HEADER);
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        case DA16200:
+        {
+            // print header
+            console_printf(MENU_APPS_DA16200_HEADER);
+
+            while (received_response == 0)
+            {
+                char character = '\0';
+
+                if (console_ready_to_read() == 1)
+                {
+                    console_read(&character, 1);
+
+                    int option = character - 0x30;
+
+                    switch (option)
+                    {
+                        case 0:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            console_printf("\r\nDA16200 app\r\n", option);
+
+                            // print header
+                            console_printf(MENU_APPS_DA16200_HEADER);
+                            break;
+                        }
+
+                        case 1:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            bridge_run(module);
+
+                            received_response = 1;
+                            break;
+                        }
+
+                        case 2:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            console_printf("\r\nUART Bridge to send AT Commands\r\n", option);
+
+                            received_response = 1;
+                            break;
+                        }
+
+                        default:
+                        {
+                            console_printf("Invalid input\r\n");
+
+                            // print header
+                            console_printf(MENU_APPS_DA16200_HEADER);
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+    }
 }
