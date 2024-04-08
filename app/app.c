@@ -35,7 +35,7 @@
 #include "app.h"
 #include "bridge.h"
 #include "console.h"
-#include "da16200_2_mqtt_webserver.h"
+#include "da16200_mqtt_webserver.h"
 
 /**********************************************************************************
  * Defines, Macros and Typedefs
@@ -256,7 +256,7 @@ static void menu_choose_application(wireless_module_t module)
                             // echo choice
                             console_printf("%d\r\n", option);
 
-                            console_printf("\r\nUART Bridge to send AT Commands\r\n", option);
+                            mqtt_webserver_run();
 
                             received_response = 1;
                             break;

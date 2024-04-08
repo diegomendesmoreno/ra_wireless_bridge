@@ -46,12 +46,15 @@ typedef struct module_interface_s module_interface_t;
 /**********************************************************************************
  * Function declarations
  *********************************************************************************/
-module_interface_t* module_interface_init(wireless_module_t wireless_module);
+module_interface_t* module_interface_init(wireless_module_t wireless_module, char called_from_app[]);
 int module_interface_receive_start(module_interface_t *module);
 int module_interface_send(module_interface_t *module, const char p_message[], const int size);
 char module_interface_receive(module_interface_t *module);
-#ifndef module_interface_receive_callback
-void module_interface_receive_callback(void);
+#ifndef bridge_receive_callback
+void bridge_receive_callback(void);
+#endif
+#ifndef da16200_mqtt_webserver_receive_callback
+void da16200_mqtt_webserver_receive_callback(void);
 #endif
 
 #endif // MODULE_INTERFACE_H_

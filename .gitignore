@@ -1,5 +1,8 @@
 ## RA ##
 
+# Network credentials
+da16200_credentials.h
+
 # FSP auto generated files
 /ra
 /ra_cfg

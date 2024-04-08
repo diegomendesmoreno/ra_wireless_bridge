@@ -50,6 +50,7 @@ struct module_interface_s
     wireless_module_t module;
     char response;
     char flag_received;
+    char *called_from_app;
 };
 
 const baud_setting_t baud_setting_da14531 =
@@ -74,6 +75,8 @@ const baud_setting_t baud_setting_da16200 =
     .semr_baudrate_bits_b.brme = false
 };
 
+module_interface_t *module;
+
 /**********************************************************************************
  * Function declarations
  *********************************************************************************/
@@ -82,10 +85,10 @@ const baud_setting_t baud_setting_da16200 =
 /**********************************************************************************
  * Function definitions
  *********************************************************************************/
-module_interface_t* module_interface_init(wireless_module_t wireless_module)
+module_interface_t* module_interface_init(wireless_module_t wireless_module, char called_from_app[])
 {
     fsp_err_t status;
-    module_interface_t *module = (module_interface_t *) malloc(sizeof(module_interface_t));
+    module = (module_interface_t *) malloc(sizeof(module_interface_t));
     assert(module != NULL);
 
     // Initialize object
@@ -93,6 +96,7 @@ module_interface_t* module_interface_init(wireless_module_t wireless_module)
     module->module = wireless_module;
     module->response = '\0';
     module->flag_received = 0;
+    module->called_from_app = called_from_app;
 
     // Initialize UART
     status = R_SCI_UART_Open(&g_uart0_ctrl, &g_uart0_cfg);
@@ -146,6 +150,13 @@ void g_uart0_callback(uart_callback_args_t *p_args)
     if (p_args->event == UART_EVENT_RX_COMPLETE)
     {
         // Call module_interface callback
-        module_interface_receive_callback();
+        if (strcmp(module->called_from_app, "bridge") == 0)
+        {
+            bridge_receive_callback();
+        }
+        else if (strcmp(module->called_from_app, "da16200mqtt_web_server") == 0)
+        {
+            da16200_mqtt_webserver_receive_callback();
+        }
     }
 }
