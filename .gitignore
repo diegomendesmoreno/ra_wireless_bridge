@@ -8,7 +8,6 @@ ra_cfg.txt
 .api_xml
 .secure_*
 .settings/e2studio_project.prefs
-
 .settings/com.renesas.cdt.ddsc.packs.componentfiles.prefs
 .settings/com.renesas.cdt.ddsc.settingseditor.prefs
 .settings/language.settings.xml
