@@ -47,13 +47,12 @@
 
 typedef struct app_bridge_s
 {
-    module_interface_t *module;
+    module_t *module;
 } app_bridge_t;
 
 /**********************************************************************************
  * Global variables
  *********************************************************************************/
-// module_interface_t *module;
 app_bridge_t *app_bridge;
 
 /**********************************************************************************
@@ -71,8 +70,8 @@ void bridge_run(wireless_module_t wireless_module)
     char character = '\0';
 
     // Initialize and start module interface
-    app_bridge->module = module_interface_init(wireless_module, "bridge");
-    module_interface_receive_start(app_bridge->module);
+    app_bridge->module = module_init(wireless_module, "bridge");
+    module_receive_start(app_bridge->module);
 
     console_printf(HEADER_INFO);
 
@@ -94,7 +93,7 @@ void bridge_run(wireless_module_t wireless_module)
                 console_printf("\n");
 
                 // Send it to Module
-                module_interface_send(app_bridge->module, command, command_size);
+                module_send(command, command_size);
                 command_size = 0;
             }
             else
@@ -115,11 +114,11 @@ void bridge_run(wireless_module_t wireless_module)
  void bridge_receive_callback(void)
  {
      // Read the received byte
-     char read_byte = module_interface_receive(app_bridge->module);
+     char read_byte = module_receive(app_bridge->module);
 
      // Echo text in the console
      console_printf("%c", read_byte);
 
      // Restart receive
-     module_interface_receive_start(app_bridge->module);
+     module_receive_start(app_bridge->module);
  }

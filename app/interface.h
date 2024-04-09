@@ -23,14 +23,14 @@
  */
 
 /*
- * File:   da16200_mqtt_webserver.h
+ * File:   interface.h
  * Author: Diego Moreno
  *
- * Created on 2024-04-08
+ * Created on 2024-03-05
  */
 
-#ifndef MQTT_WEBSERVER_H_
-#define MQTT_WEBSERVER_H_
+#ifndef INTERFACE_H_
+#define INTERFACE_H_
 
 /**********************************************************************************
  * Includes
@@ -40,11 +40,20 @@
 /**********************************************************************************
  * Defines, Macros and Typedefs
  *********************************************************************************/
-
+typedef enum wireless_module_e {DA14531 = 1, DA16200} wireless_module_t;
+typedef struct interface_s interface_t;
 
 /**********************************************************************************
  * Function declarations
  *********************************************************************************/
-void mqtt_webserver_run(void);
+interface_t* interface_init(wireless_module_t wireless_module, char called_from_app[]);
+int interface_receive_start(char *response);
+int interface_send(const char p_message[], const int size);
+#ifndef bridge_receive_callback
+void bridge_receive_callback(void);
+#endif
+#ifndef da16200_mqtt_webserver_receive_callback
+void da16200_mqtt_webserver_receive_callback(void);
+#endif
 
-#endif // MQTT_WEBSERVER_H_
+#endif // MODULE_INTERFACE_H_

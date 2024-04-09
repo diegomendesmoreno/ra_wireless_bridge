@@ -35,6 +35,7 @@
 #include "console.h"
 #include "da16200_mqtt_webserver.h"
 #include "da16200_credentials.h"
+#include "module.h"
 #include "utils/delay.h"
 #include <stdio.h>
 #include <string.h>
@@ -44,7 +45,7 @@
  *********************************************************************************/
 typedef struct app_mqtt_webserver_s
 {
-    module_interface_t *module;
+    module_t *module;
 } app_mqtt_webserver_t;
 
 /**********************************************************************************
@@ -66,7 +67,6 @@ static void _mqtt_send_data(int value);
  *********************************************************************************/
 void mqtt_webserver_run(void)
 {
-    const int DELAY = 5000;
     const char HEADER_INFO[] =  "\r\n"\
                                 "***************************************************\r\n"\
                                 "* Sending info to Web server with MQTT            *\r\n"\
@@ -74,27 +74,26 @@ void mqtt_webserver_run(void)
                                 "\r\n";
 
     // Initialize and start module interface
-    app_mqtt_webserver->module = module_interface_init(DA16200, "da16200mqtt_web_server");
-    module_interface_receive_start(app_mqtt_webserver->module);
+    app_mqtt_webserver->module = module_init(DA16200, "da16200mqtt_web_server");
+    module_receive_start(app_mqtt_webserver->module);
 
     console_printf(HEADER_INFO);
 
     // Script
     _reset_module();
-    delay_ms(DELAY);
+    delay_ms(5000);
 
     _connect_to_internet(WIFI_SSID, WIFI_PASSWORD);
-    delay_ms(DELAY);
+    delay_ms(5000);
 
     _mqtt_setup(MQTT_HOST, MQTT_TCP_IP_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_TOPIC);
-    delay_ms(DELAY);
 
     while(1)
     {
         for (int i = 15; i < 40; i++)
         {
             _mqtt_send_data(i);
-            delay_ms(DELAY);
+            delay_ms(3000);
         }
     }
 }
@@ -112,7 +111,7 @@ static void _send_command(const char command[])
 
     // Send to console and to module
     console_printf(buffer);
-    module_interface_send(app_mqtt_webserver->module, buffer, len);
+    module_send(buffer, len);
 }
 
 static void _reset_module(void)
@@ -134,30 +133,29 @@ static void _connect_to_internet(const char ssid[], const char password[])
 
 static void _mqtt_setup(const char host[], const char port[], const char username[], const char passwork[], const char pub_topic[])
 {
-    const int DELAY = 5000;
     char buffer[100];
     memset(buffer, '\0', 100);
 
     // Set host name and port number
     sprintf(buffer, "AT+NWMQBR=%s,%s\r\n", host, port);
     _send_command(buffer);
-    delay_ms(DELAY);
+    delay_ms(1000);
     memset(buffer, '\0', 100);
 
     // MQTT login information
     sprintf(buffer, "AT+NWMQLI=%s,%s\r\n", username, passwork);
     _send_command(buffer);
-    delay_ms(DELAY);
+    delay_ms(1000);
     memset(buffer, '\0', 100);
 
     // Set the topic(s) of the MQTT publisher
     sprintf(buffer, "AT+NWMQTP='%s'\r\n", pub_topic);
     _send_command(buffer);
-    delay_ms(DELAY);
+    delay_ms(1000);
 
     // Enable MQTT client
     _send_command("AT+NWMQCL=1");
-    delay_ms(DELAY);
+    delay_ms(5000);
 }
 
 static void _mqtt_send_data(int value)
@@ -174,11 +172,11 @@ static void _mqtt_send_data(int value)
 void da16200_mqtt_webserver_receive_callback(void)
 {
     // Read the received byte
-    char read_byte = module_interface_receive(app_mqtt_webserver->module);
+    char read_byte = module_receive(app_mqtt_webserver->module);
 
     // Echo text in the console
     console_printf("%c", read_byte);
 
     // Restart receive
-    module_interface_receive_start(app_mqtt_webserver->module);
+    module_receive_start(app_mqtt_webserver->module);
 }

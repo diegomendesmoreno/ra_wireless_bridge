@@ -23,38 +23,31 @@
  */
 
 /*
- * File:   module_interface.h
+ * File:   module.h
  * Author: Diego Moreno
  *
  * Created on 2024-04-08
  */
 
-#ifndef MODULE_INTERFACE_H_
-#define MODULE_INTERFACE_H_
+#ifndef MODULE_H_
+#define MODULE_H_
 
 /**********************************************************************************
  * Includes
  *********************************************************************************/
-
+#include "interface.h"
 
 /**********************************************************************************
  * Defines, Macros and Typedefs
  *********************************************************************************/
-typedef enum wireless_module_e {DA14531 = 1, DA16200} wireless_module_t;
-typedef struct module_interface_s module_interface_t;
+typedef struct module_s module_t;
 
 /**********************************************************************************
  * Function declarations
  *********************************************************************************/
-module_interface_t* module_interface_init(wireless_module_t wireless_module, char called_from_app[]);
-int module_interface_receive_start(module_interface_t *module);
-int module_interface_send(module_interface_t *module, const char p_message[], const int size);
-char module_interface_receive(module_interface_t *module);
-#ifndef bridge_receive_callback
-void bridge_receive_callback(void);
-#endif
-#ifndef da16200_mqtt_webserver_receive_callback
-void da16200_mqtt_webserver_receive_callback(void);
-#endif
+module_t* module_init(wireless_module_t wireless_module, char called_from_app[]);
+void module_receive_start(module_t *module);
+char module_receive(module_t *module);
+void module_send(const char p_message[], const int size);
 
-#endif // MODULE_INTERFACE_H_
+#endif // MODULE_H_
