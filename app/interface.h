@@ -40,7 +40,7 @@
 /**********************************************************************************
  * Defines, Macros and Typedefs
  *********************************************************************************/
-typedef enum wireless_module_e {DA14531 = 1, DA16200} wireless_module_t;
+typedef enum wireless_module_e {DA14531_CODELESS = 1, DA14531_SPS, DA16200} wireless_module_t;
 typedef struct interface_s interface_t;
 
 /**********************************************************************************

@@ -82,29 +82,40 @@ void bridge_run(wireless_module_t wireless_module)
         {
             console_read(&character, 1);
 
-            // Build command until it gets a LF
-            if (character == '\n')
+            if (wireless_module == DA14531_SPS)
             {
-                // Terminate the command string
-                command[command_size]   = '\r';
-                command[++command_size] = '\0';
-
-                // Line feed (LF) in the console
-                console_printf("\n");
+                // Local echo
+                console_printf("%c", character);
 
                 // Send it to Module
-                module_send(command, command_size);
-                command_size = 0;
+                module_send((const char *) &character, 1);
             }
             else
             {
-                command[command_size] = character;
-                command_size++;
-
-                // Local echo
-                if (wireless_module == DA16200)
+                // Build command until it gets a LF
+                if (character == '\n')
                 {
-                    console_printf("%c", character);
+                    // Terminate the command string
+                    command[command_size]   = '\r';
+                    command[++command_size] = '\0';
+
+                    // Line feed (LF) in the console
+                    console_printf("\n");
+
+                    // Send it to Module
+                    module_send(command, command_size);
+                    command_size = 0;
+                }
+                else
+                {
+                    command[command_size] = character;
+                    command_size++;
+
+                    // Local echo
+                    if (wireless_module == DA16200)
+                    {
+                        console_printf("%c", character);
+                    }
                 }
             }
         }

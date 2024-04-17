@@ -73,8 +73,9 @@ static wireless_module_t menu_choose_module(void)
     const char MENU_MODULE_HEADER[] =   "\r\n"\
                                         "***************************************************\r\n"\
                                         "* Choose the wireless module:                     *\r\n"\
-                                        "* 1 - DA14531                                     *\r\n"\
-                                        "* 2 - DA16200                                     *\r\n"\
+                                        "* 1 - DA14531 - CodeLess (AT Commands)            *\r\n"\
+                                        "* 2 - DA14531 - SPS (Serial Port Service)         *\r\n"\
+                                        "* 3 - DA16200                                     *\r\n"\
                                         "***************************************************\r\n"\
                                         "\r\n";
 
@@ -93,7 +94,8 @@ static wireless_module_t menu_choose_module(void)
 
             switch (option)
             {
-                case DA14531:
+                case DA14531_CODELESS:
+                case DA14531_SPS:
                 case DA16200:
                 {
                     // echo choice
@@ -122,34 +124,44 @@ static wireless_module_t menu_choose_module(void)
 static void menu_choose_application(wireless_module_t module)
 {
     int received_response = 0;
-    const char MENU_APPS_DA14531_HEADER[] = "\r\n"\
-                                            "***************************************************\r\n"\
-                                            "*     DA14531                                     *\r\n"\
-                                            "*                                                 *\r\n"\
-                                            "* Choose the application:                         *\r\n"\
-                                            "* 0 - Example application - echo \"DA14531 app\"  *\r\n"\
-                                            "* 1 - UART Bridge to send AT Commands             *\r\n"\
-                                            "* 2 - Sending/receiving data with SmartConsole    *\r\n"\
-                                            "***************************************************\r\n"\
-                                            "\r\n";
+    const char MENU_APPS_DA14531_CODELESS_HEADER[] =    "\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "*     DA14531 - CodeLess (AT Commands)            *\r\n"\
+                                                        "*                                                 *\r\n"\
+                                                        "* Choose the application:                         *\r\n"\
+                                                        "* 0 - Example application - echo \"DA14531 CL\"     *\r\n"\
+                                                        "* 1 - UART Bridge to send AT Commands             *\r\n"\
+                                                        "* 2 - Sending/receiving data with SmartConsole    *\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "\r\n";
 
-    const char MENU_APPS_DA16200_HEADER[] = "\r\n"\
-                                            "***************************************************\r\n"\
-                                            "*     DA16200                                     *\r\n"\
-                                            "*                                                 *\r\n"\
-                                            "* Choose the application:                         *\r\n"\
-                                            "* 0 - Example application - echo \"DA16200 app\"  *\r\n"\
-                                            "* 1 - UART Bridge to send AT Commands             *\r\n"\
-                                            "* 2 - Sending info to Web server with MQTT        *\r\n"\
-                                            "***************************************************\r\n"\
-                                            "\r\n";
+    const char MENU_APPS_DA14531_SPS_HEADER[] =         "\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "*     DA14531 - SPS (Serial Port Service)         *\r\n"\
+                                                        "*                                                 *\r\n"\
+                                                        "* Choose the application:                         *\r\n"\
+                                                        "* 0 - Example application - echo \"DA14531 SPS\"    *\r\n"\
+                                                        "* 1 - UART Bridge                                 *\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "\r\n";
+
+    const char MENU_APPS_DA16200_HEADER[] =             "\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "*     DA16200                                     *\r\n"\
+                                                        "*                                                 *\r\n"\
+                                                        "* Choose the application:                         *\r\n"\
+                                                        "* 0 - Example application - echo \"DA16200 app\"    *\r\n"\
+                                                        "* 1 - UART Bridge to send AT Commands             *\r\n"\
+                                                        "* 2 - Sending info to Web server with MQTT        *\r\n"\
+                                                        "***************************************************\r\n"\
+                                                        "\r\n";
 
     switch (module)
     {
-        case DA14531:
+        case DA14531_CODELESS:
         {
             // print header
-            console_printf(MENU_APPS_DA14531_HEADER);
+            console_printf(MENU_APPS_DA14531_CODELESS_HEADER);
 
             while (received_response == 0)
             {
@@ -168,10 +180,10 @@ static void menu_choose_application(wireless_module_t module)
                             // echo choice
                             console_printf("%d\r\n", option);
 
-                            console_printf("\r\nDA14531 app\r\n", option);
+                            console_printf("\r\nDA14531 CL\r\n", option);
 
                             // print header
-                            console_printf(MENU_APPS_DA14531_HEADER);
+                            console_printf(MENU_APPS_DA14531_CODELESS_HEADER);
                             break;
                         }
 
@@ -202,7 +214,61 @@ static void menu_choose_application(wireless_module_t module)
                             console_printf("Invalid input\r\n");
 
                             // print header
-                            console_printf(MENU_APPS_DA14531_HEADER);
+                            console_printf(MENU_APPS_DA14531_CODELESS_HEADER);
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+
+        case DA14531_SPS:
+        {
+            // print header
+            console_printf(MENU_APPS_DA14531_SPS_HEADER);
+
+            while (received_response == 0)
+            {
+                char character = '\0';
+
+                if (console_ready_to_read() == 1)
+                {
+                    console_read(&character, 1);
+
+                    int option = character - 0x30;
+
+                    switch (option)
+                    {
+                        case 0:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            console_printf("\r\nDA14531 SPS\r\n", option);
+
+                            // print header
+                            console_printf(MENU_APPS_DA14531_SPS_HEADER);
+                            break;
+                        }
+
+                        case 1:
+                        {
+                            // echo choice
+                            console_printf("%d\r\n", option);
+
+                            bridge_run(module);
+
+                            received_response = 1;
+                            break;
+                        }
+
+                        default:
+                        {
+                            console_printf("Invalid input\r\n");
+
+                            // print header
+                            console_printf(MENU_APPS_DA14531_SPS_HEADER);
                             break;
                         }
                     }

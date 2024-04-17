@@ -51,7 +51,29 @@ struct interface_s
     char *called_from_app;
 };
 
-const baud_setting_t baud_setting_da14531 =
+// UART Configuration
+uart_cfg_t g_uart_config =
+{
+    .channel = 0,
+    .data_bits = UART_DATA_BITS_8,
+    .parity = UART_PARITY_OFF,
+    .stop_bits = UART_STOP_BITS_1,
+    .p_callback = g_uart0_callback,
+    .p_context = NULL,
+    .p_transfer_tx = NULL,
+    .p_transfer_rx = NULL,
+    .rxi_ipl = (12),
+    .txi_ipl = (12),
+    .tei_ipl = (12),
+    .eri_ipl = (12),
+    .rxi_irq = VECTOR_NUMBER_SCI0_RXI,
+    .txi_irq = VECTOR_NUMBER_SCI0_TXI,
+    .tei_irq = VECTOR_NUMBER_SCI0_TEI,
+    .eri_irq = VECTOR_NUMBER_SCI0_ERI,
+};
+
+// DA14531_CODELESS
+baud_setting_t baud_setting_da14531_codeless = // Baud rate: 57600
 {
     .semr_baudrate_bits_b.abcse = 0,
     .semr_baudrate_bits_b.abcs = 0,
@@ -62,7 +84,72 @@ const baud_setting_t baud_setting_da14531 =
     .semr_baudrate_bits_b.brme = false
 };
 
-const baud_setting_t baud_setting_da16200 =
+sci_uart_extended_cfg_t g_uart0_cfg_extend_da14531_codeless =
+{
+    .clock = SCI_UART_CLOCK_INT,
+    .rx_edge_start = SCI_UART_START_BIT_FALLING_EDGE,
+    .noise_cancel = SCI_UART_NOISE_CANCELLATION_DISABLE,
+    .rx_fifo_trigger = SCI_UART_RX_FIFO_TRIGGER_MAX,
+    .p_baud_setting = &baud_setting_da14531_codeless,
+    .flow_control = SCI_UART_FLOW_CONTROL_RTS,
+    .flow_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+    .rs485_setting =
+    {
+        .enable = SCI_UART_RS485_DISABLE,
+        .polarity = SCI_UART_RS485_DE_POLARITY_HIGH,
+        .de_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+    },
+};
+
+// DA14531_SPS
+baud_setting_t baud_setting_da14531_sps = // Baud rate: 921600
+{
+    .semr_baudrate_bits_b.abcse = 1,
+    .semr_baudrate_bits_b.abcs = 0,
+    .semr_baudrate_bits_b.bgdm = 0,
+    .cks = 0,
+    .brr = 17,
+    .mddr = (uint8_t) 256,
+    .semr_baudrate_bits_b.brme = false
+};
+
+sci_uart_extended_cfg_t g_uart0_cfg_extend_da14531_sps =
+{
+    .clock = SCI_UART_CLOCK_INT,
+    .rx_edge_start = SCI_UART_START_BIT_FALLING_EDGE,
+    .noise_cancel = SCI_UART_NOISE_CANCELLATION_DISABLE,
+    .rx_fifo_trigger = SCI_UART_RX_FIFO_TRIGGER_MAX,
+    .p_baud_setting = &baud_setting_da14531_sps,
+    .flow_control = SCI_UART_FLOW_CONTROL_CTSRTS,
+    .flow_control_pin = BSP_IO_PORT_04_PIN_12,
+    .rs485_setting =
+    {
+        .enable = SCI_UART_RS485_DISABLE,
+        .polarity = SCI_UART_RS485_DE_POLARITY_HIGH,
+        .de_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+    },
+};
+
+const ioport_pin_cfg_t g_bsp_pin_cfg_data_da14531_sps[] =
+{
+    {
+        .pin = BSP_IO_PORT_04_PIN_12,
+        .pin_cfg = ((uint32_t) IOPORT_CFG_PORT_DIRECTION_OUTPUT | (uint32_t) IOPORT_CFG_PORT_OUTPUT_LOW)
+    },
+    {
+        .pin = BSP_IO_PORT_04_PIN_13,
+        .pin_cfg = ((uint32_t) IOPORT_CFG_PERIPHERAL_PIN | (uint32_t) IOPORT_PERIPHERAL_SCI0_2_4_6_8)
+    },
+};
+
+ioport_cfg_t g_bsp_pin_cfg_da14531_sps =
+{
+    .number_of_pins = 2,
+    .p_pin_cfg_data = &g_bsp_pin_cfg_data_da14531_sps[0],
+};
+
+// DA16200
+baud_setting_t baud_setting_da16200 = // Baud rate: 115200
 {
     .semr_baudrate_bits_b.abcse = 0,
     .semr_baudrate_bits_b.abcs = 0,
@@ -71,6 +158,23 @@ const baud_setting_t baud_setting_da16200 =
     .brr = 53,
     .mddr = (uint8_t) 256,
     .semr_baudrate_bits_b.brme = false
+};
+
+sci_uart_extended_cfg_t g_uart0_cfg_extend_da16200 =
+{
+    .clock = SCI_UART_CLOCK_INT,
+    .rx_edge_start = SCI_UART_START_BIT_FALLING_EDGE,
+    .noise_cancel = SCI_UART_NOISE_CANCELLATION_DISABLE,
+    .rx_fifo_trigger = SCI_UART_RX_FIFO_TRIGGER_MAX,
+    .p_baud_setting = &baud_setting_da16200,
+    .flow_control = SCI_UART_FLOW_CONTROL_RTS,
+    .flow_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+    .rs485_setting =
+    {
+        .enable = SCI_UART_RS485_DISABLE,
+        .polarity = SCI_UART_RS485_DE_POLARITY_HIGH,
+        .de_control_pin = (bsp_io_port_pin_t) UINT16_MAX,
+    },
 };
 
 interface_t *interface;
@@ -95,19 +199,45 @@ interface_t* interface_init(wireless_module_t wireless_module, char called_from_
     interface->called_from_app = called_from_app;
 
     // Initialize UART
-    status = R_SCI_UART_Open(&g_uart0_ctrl, &g_uart0_cfg);
-    assert(status == FSP_SUCCESS);
+    switch (wireless_module)
+    {
+        case DA14531_CODELESS:
+        {
+            // Configuration
+            g_uart_config.p_extend = &g_uart0_cfg_extend_da14531_codeless;
 
-    // Set baud rate
-    if (wireless_module ==  DA14531)
-    {
-        status = R_SCI_UART_BaudSet(&g_uart0_ctrl, &baud_setting_da14531);
-        assert(status == FSP_SUCCESS);
-    }
-    else if (wireless_module ==  DA16200)
-    {
-        status = R_SCI_UART_BaudSet(&g_uart0_ctrl, &baud_setting_da16200);
-        assert(status == FSP_SUCCESS);
+            status = R_SCI_UART_Open(&g_uart0_ctrl, &g_uart_config);
+            assert(status == FSP_SUCCESS);
+            break;
+        }
+
+        case DA14531_SPS:
+        {
+            // Configuration
+            g_uart_config.p_extend = &g_uart0_cfg_extend_da14531_sps;
+
+            status = R_IOPORT_Open(&g_ioport_ctrl, &g_bsp_pin_cfg_da14531_sps);
+            assert(status == FSP_SUCCESS);
+
+            status = R_SCI_UART_Open(&g_uart0_ctrl, &g_uart_config);
+            assert(status == FSP_SUCCESS);
+            break;
+        }
+
+        case DA16200:
+        {
+            // Configuration
+            g_uart_config.p_extend = &g_uart0_cfg_extend_da16200;
+
+            status = R_SCI_UART_Open(&g_uart0_ctrl, &g_uart_config);
+            assert(status == FSP_SUCCESS);
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
     }
 
     return interface;
