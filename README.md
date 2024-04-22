@@ -8,7 +8,6 @@ This project is an interface bridge between a RA MCU and Renesas Wireless Module
 You can type the AT commands in a console (two options below) and they are transmitted to and from the module through the MCU via UART.
 
 - [RTT (Real Time Transfer)](https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/) through SEGGER J-Link
-- ~~Terminal emulator (communications) program such as Tera Term through a COM Port (USB device/peripheral CDC).~~
 
 # How to run the project
 
@@ -22,16 +21,27 @@ This project is made for running with the boards below:
 
 ## Setup
 
-### Flashing the wireless modules with the AT Commands firmware
+### Flashing the wireless modules with the firmware image
 
 #### Bluetooth Low Energy (BLE) - US159-DA14531EVZ
+
+##### CodeLess, aka, AT Commands firmware image
 
 - Download the lastest AT Command firmware image ([CodeLess™ AT Commands](https://www.renesas.com/us/en/software-tool/smartbond-codeless-commands))
 - You can use a SEGGER J-Link if you have one, or use the on-board J-Link in the RA board
   - For this, change the jumpers according to _5.2.3 Debug Out_ section of the [EK-RA4M2 v1 – User's Manual](https://www.renesas.com/us/en/document/man/ek-ra4m2-v1-users-manual?r=1470206)
   - Connect the _US159-DA14531EVZ_ in the `PMOD2` connector in the RA board
   - Connect the 10-pin connector cable between the two boards
-- Flash one of the provided images (e.g. `codeless_531_00_set_two_standalone`) using [SmartBond™ Flash Programmer](https://www.renesas.com/us/en/software-tool/smartbond-flash-programmer)
+- Flash one of the provided images (e.g. `codeless_531_00_set_two_standalone.bin`) using [SmartBond™ Flash Programmer](https://www.renesas.com/us/en/software-tool/smartbond-flash-programmer)
+
+##### Serial Port Service (SPS), aka, serial cable communication emulation
+
+- Download the lastest SPS firmware image ([Serial Port Service (SPS)](https://www.renesas.com/us/en/software-tool/serial-port-service-sps))
+- You can use a SEGGER J-Link if you have one, or use the on-board J-Link in the RA board
+  - For this, change the jumpers according to _5.2.3 Debug Out_ section of the [EK-RA4M2 v1 – User's Manual](https://www.renesas.com/us/en/document/man/ek-ra4m2-v1-users-manual?r=1470206)
+  - Connect the _US159-DA14531EVZ_ in the `PMOD2` connector in the RA board
+  - Connect the 10-pin connector cable between the two boards
+- Flash the provided image `dsps_device_531.bin` using [SmartBond™ Flash Programmer](https://www.renesas.com/us/en/software-tool/smartbond-flash-programmer)
 
 #### Wi-Fi - US159-DA16200MEVZ
 
@@ -53,7 +63,6 @@ This project is made for running with the boards below:
 - Clone or download this repository to your PC
 - Open e2studio and export the project (_3.2.12 Importing an Existing Project into e² studio_ section of [FSP User's Manual](https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp))
 - Open the file `configuration.xml` to open _FSP Configuration_ and press the button _Generate Project Content_
-- Leave `#define USE_RTT` at `app/console.h` to use RTT ~~and comment it out to use Terminal through USB CDC as console.~~
 - Build it and go into debug to flash the firmware (_3.2.9 Debugging the Project_ section of _FSP User's Manual_)
 
 #### Console - If you're using RTT
@@ -64,10 +73,6 @@ This project is made for running with the boards below:
   - `File` >> `Connect`
     - Target Device: `R7FA4M2AD`
     - RTT Control Block: Search Range (`0x20000000 0x10000`) or look into the guide above if it doesn't work
-
-#### ~~Console - If you're using Terminal through USB CDC~~
-
-- ~~Open a terminal communication program (such as Tera Term) and connect to the newly opened COM Port.~~
 
 ### Example
 
@@ -96,4 +101,3 @@ OK
 - Import the Application software (`app` folder).
 - Add some Heap (e.g. `0x100`) in `FSP Configuration` >> `BSP` (tab) >> `Properties` >> `RA Common` >> `Heap size (bytes)`.
 - Setup UART pins connected to the PMOD2 connector (see the evaluation kit user's manual or schematics).
-- ~~Setup USB peripheral CDC (if present) to get the Terminal COM Port console option with the provided descriptor.~~
