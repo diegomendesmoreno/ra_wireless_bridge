@@ -1,27 +1,44 @@
 # RA Wireless Bridge
 
-This project is an interface bridge between a RA MCU and Renesas Wireless Modules below:
+This project is an interface bridge between a RA MCU and Renesas Wireless Modules below using the SEGGER J-Link [RTT (Real Time Transfer)](https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/) terminal:
 
 - Bluetooth Low Energy (BLE) - [DA14531MOD](https://www.renesas.com/us/en/products/wireless-connectivity/bluetooth-low-energy/da14531mod-smartbond-tiny-bluetooth-low-energy-module)
 - Wi-Fi - [DA16200MOD](https://www.renesas.com/us/en/products/wireless-connectivity/wi-fi/low-power-wi-fi/da16200mod-ultra-low-power-wi-fi-modules-battery-powered-iot-devices)
 
-You can type the AT commands in a console (two options below) and they are transmitted to and from the module through the MCU via UART.
 
-- [RTT (Real Time Transfer)](https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer/) through SEGGER J-Link
 
-# How to run the project
+# How to run it
 
 ## Hardware
 
 This project is made for running with the boards below:
 
-- [EK-RA4M2](https://www.renesas.com/us/en/products/microcontrollers-microprocessors/ra-cortex-m-mcus/ek-ra4m2-evaluation-kit-ra4m2-mcu-group) - Evaluation Kit for [RA4M2](https://www.renesas.com/us/en/products/microcontrollers-microprocessors/ra-cortex-m-mcus/ra4m2-100mhz-arm-cortex-m33-trustzone-high-integration-lowest-active-power-consumption) MCU Group. But it is easily portable for other MCUs. See the `How to port this project for different RA Evaluation kits (EK)` guide.
+- [EK-RA4M2](https://www.renesas.com/us/en/products/microcontrollers-microprocessors/ra-cortex-m-mcus/ek-ra4m2-evaluation-kit-ra4m2-mcu-group) - Evaluation Kit for [RA4M2](https://www.renesas.com/us/en/products/microcontrollers-microprocessors/ra-cortex-m-mcus/ra4m2-100mhz-arm-cortex-m33-trustzone-high-integration-lowest-active-power-consumption) MCU Group. But it is easily portable for other MCUs. See the _[How to port this project for different RA Evaluation kits (EK)](Doc/MCU_Port.md)_ guide.
+![EK-RA4M2](/Doc/EK-RA4M2.png)
 - [US159-DA14531EVZ](https://www.renesas.com/us/en/products/wireless-connectivity/bluetooth-low-energy/us159-da14531evz-low-power-bluetooth-pmod-board-renesas-quick-connect-iot) - Low Power Bluetooth® Pmod™ Board for _DA14531MOD_ module
+![US159-DA14531EVZ](/Doc/US159-DA14531EVZ.png)
 - [US159-DA16200MEVZ](https://www.renesas.com/us/en/products/wireless-connectivity/wi-fi/low-power-wi-fi/us159-da16200mevz-ultra-low-power-wi-fi-pmod-board-renesas-quick-connect-iot) - Ultra Low Power Wi-Fi Pmod™ Board for _DA16200MOD_ module
+![US159-DA16200MEVZ](/Doc/US159-DA16200MEVZ.png)
 
-## Setup
+### Connecting the boards
 
-### Flashing the wireless modules with the firmware image
+Connect either the US159-DA14531EVZ or US159-DA16200MEVZ to the `PMOD2` connector in the RA board:
+
+![SmartConsole example](/Doc/connecting_boards.png)
+
+
+## Software
+
+### Install the software
+
+- RTT Terminal
+  - Install the [J-Link Software pack](https://www.segger.com/downloads/jlink/) (that includes the RTT terminal)
+  - Check the RTTViewer installation and usage in [Example Project Usage Guide](https://github.com/renesas/ra-fsp-examples/blob/master/example_projects/Example%20Project%20Usage%20Guide.pdf)
+- To flash the RA board, either:
+  - Install [Renesas Flash Programmer](https://www.renesas.com/us/en/software-tool/renesas-flash-programmer-programming-gui#downloads) to directly flash the MCU with the binary image provided in the [GitHub Releases page](https://github.com/diegomendesmoreno/ra_wireless_bridge/releases)
+  - Install e2studio (IDE) and FSP (SDK) version `5.x.x` to compile and flash from the source. You can get the FSP with e2 studio installer from [FSP's GitHub Release page](https://github.com/renesas/fsp/releases).
+
+### Flash the wireless modules with the firmware image
 
 #### Bluetooth Low Energy (BLE) - US159-DA14531EVZ
 
@@ -49,55 +66,44 @@ This project is made for running with the boards below:
 - Follow the steps at the section _4.5 Programming Firmware Images_ of [UM-WI-056 DA16200 DA16600 FreeRTOS Getting Started Guide](https://www.renesas.com/us/en/document/qsg/um-wi-056-da16200-da16600-freertos-getting-started-guide?r=1599971)
 - For firmware upgrade, you need to use the debug interface (UART0) and not the ATCMD interface (UART1).
 
-### MCU - EK-RA4M2 and connecting the boards
+### Flash the MCU
 
 - If you used the on-board J-Link to flash the BLE module, change the jumper configuration back to _Table 5. Debug On-Board Jumper Configuration_ section of the [EK-RA4M2 v1 – User's Manual](https://www.renesas.com/us/en/document/man/ek-ra4m2-v1-users-manual?r=1470206)
-- For USB, change the jumpers according to the _USB Device configuration_ described in _5.4.1 USB Full Speed_ section of the _EK-RA4M2 v1 – User's Manual_
-- Connect either the US159-DA14531EVZ or US159-DA16200MEVZ to the `PMOD2` connector in the RA board
+- To flash the MCU:
+  - If you're using Renesas Flash Programmer:
+    - Download the firmware binary from the [GitHub Releases page](https://github.com/diegomendesmoreno/ra_wireless_bridge/releases)
+    - Follow the instruction on the article _[Getting Started with Renesas Flash Programmer](https://diegomendesmoreno.github.io/the-while-loop/en/posts/2023/09/getting-started-with-renesas-flash-programmer/)_ ([link in Portuguese](https://diegomendesmoreno.github.io/the-while-loop/pt-br/posts/2023/09/primeiros-passos-com-o-renesas-flash-programmer/)).
+  - If you're using e2studio:
+    - Clone or download this repository to your PC
+    - Open e2studio and export the project (_3.2.12 Importing an Existing Project into e² studio_ section of [FSP User's Manual](https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp))
+    - Open the file `configuration.xml` to open _FSP Configuration_ and press the button _Generate Project Content_
+    - Build it and go into debug to flash the firmware (_3.2.9 Debugging the Project_ section of _FSP User's Manual_)
 
-## Running the application
 
-#### Building and flashing the application
+## Run the application
 
-- Have e2studio and FSP (version 5.x.x) installed. I recommend installing FSP with e2 studio installer from [FSP's GitHub Release page](https://github.com/renesas/fsp/releases).
-- Clone or download this repository to your PC
-- Open e2studio and export the project (_3.2.12 Importing an Existing Project into e² studio_ section of [FSP User's Manual](https://www.renesas.com/us/en/software-tool/flexible-software-package-fsp))
-- Open the file `configuration.xml` to open _FSP Configuration_ and press the button _Generate Project Content_
-- Build it and go into debug to flash the firmware (_3.2.9 Debugging the Project_ section of _FSP User's Manual_)
+With one of the wireless modules flashed and connected to the MCU (also flashed and connected with USB to the PC):
 
-#### Console - If you're using RTT
-
-- Check the RTTViewer installation and usage in [Example Project Usage Guide](https://github.com/renesas/ra-fsp-examples/blob/master/example_projects/Example%20Project%20Usage%20Guide.pdf)
-- RTTViewer configs:
+- Open RTTViewer and configure it:
   - Send on Input (`Input` >> `Sending...` >> `Send on Input`)
-  - `File` >> `Connect`
-    - Target Device: `R7FA4M2AD`
-    - RTT Control Block: Search Range (`0x20000000 0x10000`) or look into the guide above if it doesn't work
+- Click `File` >> `Connect`
+  - Target Device: `R7FA4M2AD`
+  - RTT Control Block: Search Range (`0x20000000 0x10000`) or look into the guide above if it doesn't work
 
-### Example
+You should see the application menu like below:
 
 ```
 ***************************************************
 * Choose the wireless module:                     *
-* 1 - DA14531                                     *
-* 2 - DA16200                                     *
+* 1 - DA14531 - CodeLess (AT Commands)            *
+* 2 - DA14531 - SPS (Serial Port Service)         *
+* 3 - DA16200                                     *
 ***************************************************
-
-1
-
-***************************************************
-* Console2Bridge Application for Wireless Modules *
-***************************************************
-
-
-AT
-
-
-OK
 ```
 
-## How to port this project for different RA Evaluation kits (EK)
+### Applications
 
-- Import the Application software (`app` folder).
-- Add some Heap (e.g. `0x100`) in `FSP Configuration` >> `BSP` (tab) >> `Properties` >> `RA Common` >> `Heap size (bytes)`.
-- Setup UART pins connected to the PMOD2 connector (see the evaluation kit user's manual or schematics).
+There a few applications to run in this project for each module, see below the list and details:
+
+- See [applcations for DA14531MOD](Doc/Apps_DA14531.md) (Bluetooth Low energy module)
+- See [applications for DA16200MOD](Doc/Apps_DA16200.md) (Wi-Fi module)
