@@ -16,7 +16,6 @@ There are a few choices of applications with the Wi-Fi module [DA16200MOD](https
 *     DA16200                                     *
 *                                                 *
 * Choose the application:                         *
-* 0 - Example application - echo "DA16200 app"    *
 * 1 - UART Bridge to send AT Commands             *
 * 2 - Sending info to Web server with MQTT        *
 ***************************************************

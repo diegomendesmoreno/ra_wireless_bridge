@@ -21,7 +21,6 @@ These are the applications available if you flashed the module with the AT Comma
 *     DA14531 - CodeLess (AT Commands)            *
 *                                                 *
 * Choose the application:                         *
-* 0 - Example application - echo "DA14531 CL"     *
 * 1 - UART Bridge to send AT Commands             *
 * 2 - Sending/receiving data with SmartConsole    *
 ***************************************************
@@ -66,7 +65,6 @@ These are the applications available if you flashed the module with the SPS firm
 *     DA14531 - SPS (Serial Port Service)         *
 *                                                 *
 * Choose the application:                         *
-* 0 - Example application - echo "DA14531 SPS"    *
 * 1 - UART Bridge                                 *
 ***************************************************
 ```

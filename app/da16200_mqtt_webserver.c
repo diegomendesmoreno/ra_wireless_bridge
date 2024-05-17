@@ -79,6 +79,14 @@ void mqtt_webserver_run(void)
 
     console_printf(HEADER_INFO);
 
+    // Checking if the file da16200_credentials.h was filled out
+    if (strcmp(MQTT_PASSWORD, "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX") == 0)
+    {
+        console_printf("\r\nNo Wi-Fi credentials found\r\n");
+        console_printf("\r\nOpen the project in e2studio and fill out da16200_credentials.h\r\n");
+        while(1);
+    }
+
     // Script
     _reset_module();
     delay_ms(5000);

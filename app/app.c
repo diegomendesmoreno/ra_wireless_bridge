@@ -129,7 +129,6 @@ static void menu_choose_application(wireless_module_t module)
                                                         "*     DA14531 - CodeLess (AT Commands)            *\r\n"\
                                                         "*                                                 *\r\n"\
                                                         "* Choose the application:                         *\r\n"\
-                                                        "* 0 - Example application - echo \"DA14531 CL\"     *\r\n"\
                                                         "* 1 - UART Bridge to send AT Commands             *\r\n"\
                                                         "* 2 - Sending/receiving data with SmartConsole    *\r\n"\
                                                         "***************************************************\r\n"\
@@ -140,7 +139,6 @@ static void menu_choose_application(wireless_module_t module)
                                                         "*     DA14531 - SPS (Serial Port Service)         *\r\n"\
                                                         "*                                                 *\r\n"\
                                                         "* Choose the application:                         *\r\n"\
-                                                        "* 0 - Example application - echo \"DA14531 SPS\"    *\r\n"\
                                                         "* 1 - UART Bridge                                 *\r\n"\
                                                         "***************************************************\r\n"\
                                                         "\r\n";
@@ -150,7 +148,6 @@ static void menu_choose_application(wireless_module_t module)
                                                         "*     DA16200                                     *\r\n"\
                                                         "*                                                 *\r\n"\
                                                         "* Choose the application:                         *\r\n"\
-                                                        "* 0 - Example application - echo \"DA16200 app\"    *\r\n"\
                                                         "* 1 - UART Bridge to send AT Commands             *\r\n"\
                                                         "* 2 - Sending info to Web server with MQTT        *\r\n"\
                                                         "***************************************************\r\n"\
@@ -175,18 +172,6 @@ static void menu_choose_application(wireless_module_t module)
 
                     switch (option)
                     {
-                        case 0:
-                        {
-                            // echo choice
-                            console_printf("%d\r\n", option);
-
-                            console_printf("\r\nDA14531 CL\r\n", option);
-
-                            // print header
-                            console_printf(MENU_APPS_DA14531_CODELESS_HEADER);
-                            break;
-                        }
-
                         case 1:
                         {
                             // echo choice
@@ -240,18 +225,6 @@ static void menu_choose_application(wireless_module_t module)
 
                     switch (option)
                     {
-                        case 0:
-                        {
-                            // echo choice
-                            console_printf("%d\r\n", option);
-
-                            console_printf("\r\nDA14531 SPS\r\n", option);
-
-                            // print header
-                            console_printf(MENU_APPS_DA14531_SPS_HEADER);
-                            break;
-                        }
-
                         case 1:
                         {
                             // echo choice
@@ -294,18 +267,6 @@ static void menu_choose_application(wireless_module_t module)
 
                     switch (option)
                     {
-                        case 0:
-                        {
-                            // echo choice
-                            console_printf("%d\r\n", option);
-
-                            console_printf("\r\nDA16200 app\r\n", option);
-
-                            // print header
-                            console_printf(MENU_APPS_DA16200_HEADER);
-                            break;
-                        }
-
                         case 1:
                         {
                             // echo choice
